@@ -6,6 +6,7 @@ interface Mappable {
     lat: number;
     lng: number;
   };
+  markerContent(): string;
 }
 
 export class CustomMap {
@@ -22,12 +23,20 @@ export class CustomMap {
   }
 
   addMarker(mappble: Mappable): void {
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       map: this.googleMap,
       position: {
         lat: mappble.location.lat,
         lng: mappble.location.lng,
       },
+    });
+
+    marker.addListener('click', () => {
+      const infoWindow = new google.maps.InfoWindow({
+        content: mappble.markerContent(),
+      });
+
+      infoWindow.open(this.googleMap, marker);
     });
   }
 }
